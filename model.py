@@ -133,12 +133,18 @@ class Model:
                     loss.backward(retain_graph=turn_num != len(dial_batch) - 1)
                     grad = torch.nn.utils.clip_grad_norm(self.m.parameters(), 5.0)
                     optim.step()
-                    sup_loss += loss.data.cpu().numpy()[0]
+                    # sup_loss += loss.data.cpu().numpy()[0]
+                    sup_loss += loss.data.cpu().numpy()
                     sup_cnt += 1
+                    # logging.debug(
+                    #     'loss:{} pr_loss:{} m_loss:{} grad:{}'.format(loss.data[0],
+                    #                                                    pr_loss.data[0],
+                    #                                                    m_loss.data[0],
+                    #                                                    grad))
                     logging.debug(
-                        'loss:{} pr_loss:{} m_loss:{} grad:{}'.format(loss.data[0],
-                                                                       pr_loss.data[0],
-                                                                       m_loss.data[0],
+                        'loss:{} pr_loss:{} m_loss:{} grad:{}'.format(loss.data,
+                                                                       pr_loss.data,
+                                                                       m_loss.data,
                                                                        grad))
 
                     prev_z = turn_batch['bspan']
@@ -207,10 +213,13 @@ class Model:
                                                                     degree_input=degree_input,
                                                                     u_input_np=u_input_np, m_input_np=m_input_np,
                                                                     u_len=u_len, m_len=m_len, mode='train',**kw_ret)
-                sup_loss += loss.data[0]
+                sup_loss += loss.data
+                # sup_loss += loss.data[0]
                 sup_cnt += 1
+                # logging.debug(
+                #     'loss:{} pr_loss:{} m_loss:{}'.format(loss.data[0], pr_loss.data[0], m_loss.data[0]))
                 logging.debug(
-                    'loss:{} pr_loss:{} m_loss:{}'.format(loss.data[0], pr_loss.data[0], m_loss.data[0]))
+                    'loss:{} pr_loss:{} m_loss:{}'.format(loss.data, pr_loss.data, m_loss.data))
 
         sup_loss /= (sup_cnt + 1e-8)
         unsup_loss /= (unsup_cnt + 1e-8)

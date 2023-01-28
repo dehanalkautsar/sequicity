@@ -4,6 +4,7 @@ import pickle
 from config import global_config as cfg
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from torch import int64
 import logging
 import random
 import os
@@ -127,6 +128,9 @@ class _ReaderBase:
 
         def decode(self, idx):
             if idx < len(self):
+                if type(idx) != int:
+                    if idx.dtype == int64:
+                        idx = idx.item()
                 return self._idx2item[idx]
             else:
                 return 'ITEM_%d' % (idx - cfg.vocab_size)

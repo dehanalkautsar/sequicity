@@ -185,7 +185,7 @@ class BSpanDecoder(nn.Module):
 
         if cfg.use_positional_embedding:  # defaulty not used
             position_label = [position] * u_enc_out.size(1)  # [B]
-            position_label = cuda_(Variable(torch.LongTensor(position_label))).view(1, -1)  # [1,B]
+            position_label = cuda_(Variable(torch.LongTensor(position_label))).reshape(1, -1)  # [1,B]
             pos_emb = self.positional_embedding(position_label)
             embed_z = embed_z + pos_emb
 
@@ -391,11 +391,11 @@ class TSD(nn.Module):
                                    u_emb=u_emb, pv_z_emb=pv_z_emb, position=t)
                 pz_proba.append(proba)
                 pz_dec_outs.append(pz_dec_out)
-                z_np = z_tm1.view(-1).cpu().data.numpy()
+                z_np = z_tm1.reshape(-1).cpu().data.numpy()
                 for i in range(batch_size):
                     if z_np[i] == self.vocab.encode('EOS_Z2'):
                         hiddens[i] = last_hidden[:, i, :]
-                z_tm1 = z_input[t].view(1, -1)
+                z_tm1 = z_input[t].reshape(1, -1)
             for i in range(batch_size):
                 if hiddens[i] is None:
                     hiddens[i] = last_hidden[:, i, :]
@@ -414,10 +414,10 @@ class TSD(nn.Module):
                 proba, last_hidden, dec_out = self.m_decoder(pz_dec_outs, u_enc_out, u_input_np, m_tm1,
                                                              degree_input, last_hidden, z_input_np)
                 if teacher_forcing:
-                    m_tm1 = m_input[t].view(1, -1)
+                    m_tm1 = m_input[t].reshape(1, -1)
                 else:
                     _, m_tm1 = torch.topk(proba, 1)
-                    m_tm1 = m_tm1.view(1, -1)
+                    m_tm1 = m_tm1.reshape(1, -1)
                 pm_dec_proba.append(proba)
                 m_dec_outs.append(dec_out)
 
@@ -459,16 +459,16 @@ class TSD(nn.Module):
             pz_proba.append(proba)
             pz_dec_outs.append(pz_dec_out)
             z_proba, z_index = torch.topk(proba, 1)  # [B,1]
-            z_index = z_index.data.view(-1)
+            z_index = z_index.data.reshape(-1)
             decoded.append(z_index.clone())
             for i in range(z_index.size(0)):
                 if z_index[i] >= cfg.vocab_size:
                     z_index[i] = 2  # unk
-            z_np = z_tm1.view(-1).cpu().data.numpy()
+            z_np = z_tm1.reshape(-1).cpu().data.numpy()
             for i in range(batch_size):
                 if z_np[i] == self.vocab.encode('EOS_Z2'):
                     hiddens[i] = last_hidden[:, i, :]
-            z_tm1 = cuda_(Variable(z_index).view(1, -1))
+            z_tm1 = cuda_(Variable(z_index).reshape(1, -1))
         for i in range(batch_size):
             if hiddens[i] is None:
                 hiddens[i] = last_hidden[:, i, :]
@@ -485,12 +485,12 @@ class TSD(nn.Module):
             proba, last_hidden, _ = self.m_decoder(pz_dec_outs, u_enc_out, u_input_np, m_tm1,
                                                    degree_input, last_hidden, bspan_index_np)
             mt_proba, mt_index = torch.topk(proba, 1)  # [B,1]
-            mt_index = mt_index.data.view(-1)
+            mt_index = mt_index.data.reshape(-1)
             decoded.append(mt_index.clone())
             for i in range(mt_index.size(0)):
                 if mt_index[i] >= cfg.vocab_size:
                     mt_index[i] = 2  # unk
-            m_tm1 = cuda_(Variable(mt_index).view(1, -1))
+            m_tm1 = cuda_(Variable(mt_index).reshape(1, -1))
         decoded = torch.stack(decoded, dim=0).transpose(0, 1)
         decoded = list(decoded)
         return [list(_) for _ in decoded]
@@ -523,7 +523,7 @@ class TSD(nn.Module):
                 return clone
 
         def beam_result_valid(decoded_t, bspan_index):
-            decoded_t = [_.view(-1).data[0] for _ in decoded_t]
+            decoded_t = [_.reshape(-1).data[0] for _ in decoded_t]
             req_slots = self.get_req_slots(bspan_index)
             decoded_sentence = self.vocab.sentence_decode(decoded_t, cfg.eos_m_token)
             for req in req_slots:
@@ -570,7 +570,7 @@ class TSD(nn.Module):
                         else:
                             failed.append(state)
                     else:
-                        decoded_t = decoded_t.view(1, -1)
+                        decoded_t = decoded_t.reshape(1, -1)
                         new_state = state.update_clone(score_incre, last_hidden, decoded_t)
                         new_states.append(new_state)
 
@@ -589,7 +589,7 @@ class TSD(nn.Module):
 
         finished.sort(key=lambda x: -x.score)
         decoded_t = finished[0].decoded
-        decoded_t = [_.view(-1).data[0] for _ in decoded_t]
+        decoded_t = [_.reshape(-1).data[0] for _ in decoded_t]
         decoded_sentence = self.vocab.sentence_decode(decoded_t, cfg.eos_m_token)
         print(decoded_sentence)
         generated = torch.cat(finished[0].decoded, dim=1).data  # [B=1, T]
@@ -604,13 +604,13 @@ class TSD(nn.Module):
                                                        u_input_np[:, i].reshape((-1, 1)),
                                                        last_hidden_s, degree_input_s, bspan_index[i])
             decoded.append(decoded_s)
-        return [list(_.view(-1)) for _ in decoded]
+        return [list(_.reshape(-1)) for _ in decoded]
 
     def supervised_loss(self, pz_proba, pm_dec_proba, z_input, m_input):
         pz_proba, pm_dec_proba = pz_proba[:, :, :cfg.vocab_size].contiguous(), pm_dec_proba[:, :,
                                                                                :cfg.vocab_size].contiguous()
-        pr_loss = self.pr_loss(pz_proba.view(-1, pz_proba.size(2)), z_input.view(-1))
-        m_loss = self.dec_loss(pm_dec_proba.view(-1, pm_dec_proba.size(2)), m_input.view(-1))
+        pr_loss = self.pr_loss(pz_proba.reshape(-1, pz_proba.size(2)), z_input.reshape(-1))
+        m_loss = self.dec_loss(pm_dec_proba.reshape(-1, pm_dec_proba.size(2)), m_input.reshape(-1))
 
         loss = pr_loss + m_loss
         return loss, pr_loss, m_loss
@@ -653,7 +653,7 @@ class TSD(nn.Module):
 
         m_tm1 = self.vocab.decode(m_tm1[0])
         finished = m_tm1 == 'EOS_M'
-        decoded = [_.view(-1)[0] for _ in decoded]
+        decoded = [_.reshape(-1)[0] for _ in decoded]
         decoded_sentence = self.vocab.sentence_decode(decoded, cfg.eos_m_token).split()
         reward = -0.01 if cfg.dataset == 'camrest' else 0
         '''
@@ -698,7 +698,7 @@ class TSD(nn.Module):
         bspan_index_np = np.array(bspan_index).reshape(-1, 1)
         for t in range(self.max_ts):
             # reward
-            reward, finished = self.reward(m_tm1.data.view(-1), decoded, bspan_index)
+            reward, finished = self.reward(m_tm1.data.reshape(-1), decoded, bspan_index)
             reward_sum += reward
             rewards.append(reward)
             if t == self.max_ts - 1:
@@ -713,14 +713,14 @@ class TSD(nn.Module):
             dis = Categorical(proba)
             action = dis.sample()
             log_probs.append(dis.log_prob(action))
-            mt_index = action.data.view(-1)
+            mt_index = action.data.reshape(-1)
             decoded.append(mt_index.clone())
 
             for i in range(mt_index.size(0)):
                 if mt_index[i] >= cfg.vocab_size:
                     mt_index[i] = 2  # unk
 
-            m_tm1 = cuda_(Variable(mt_index).view(1, -1))
+            m_tm1 = cuda_(Variable(mt_index).reshape(1, -1))
 
     def finish_episode(self, log_probas, saved_rewards):
         R = 0
