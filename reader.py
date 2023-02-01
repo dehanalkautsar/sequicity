@@ -5,6 +5,7 @@ from config import global_config as cfg
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from torch import int64
+from gensim.models import KeyedVectors
 import logging
 import random
 import os
@@ -835,7 +836,7 @@ def get_glove_matrix(vocab, initial_embedding_np):
     :param initial_embedding_np:
     :return: np array of [V,E]
     """
-    ef = open(cfg.glove_path, 'r')
+    ef = open(cfg.glove_path, 'r') #glove_path
     cnt = 0
     vec_array = initial_embedding_np
     old_avg = np.average(vec_array)
@@ -860,3 +861,32 @@ def get_glove_matrix(vocab, initial_embedding_np):
                                                                                           new_avg, old_std, new_std))
     return vec_array
 
+def get_fasttext_matrix(vocab, initial_embedding_np):
+    """
+    return a fasttext embedding matrix
+    :param self:
+    :param fasttext_file:
+    :param initial_embedding_np:
+    :return: np array of [V,E]
+    """
+    ef = KeyedVectors.load_word2vec_format(cfg.fasttext_path, limit=100000)
+    cnt = 0
+    vec_array = initial_embedding_np
+    old_avg = np.average(vec_array)
+    old_std = np.std(vec_array)
+    vec_array = vec_array.astype(np.float32)
+    new_avg, new_std = 0, 0
+
+    for vcb in ef.vocab:
+        word, vec = vcb, ef[vcb]
+        word_idx = vocab.encode(word)
+        if word.lower() in ['unk', '<unk>'] or word_idx != vocab.encode('<unk>'):
+            cnt += 1
+            vec_array[word_idx] = vec
+            new_avg += np.average(vec)
+            new_std += np.std(vec)
+    new_avg /= cnt
+    new_std /= cnt
+    logging.info('%d known embedding. old mean: %f new mean %f, old std %f new std %f' % (cnt, old_avg,
+                                                                                          new_avg, old_std, new_std))
+    return vec_array

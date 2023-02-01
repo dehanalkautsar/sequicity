@@ -109,7 +109,7 @@ class SimpleDynamicEncoder(nn.Module):
         self.embed_size = embed_size
         self.n_layers = n_layers
         self.dropout = dropout
-        self.embedding = nn.Embedding(input_size, embed_size)
+        self.embedding = nn.Embedding(input_size, embed_size) #vocab size, embedding_size
         self.gru = nn.GRU(embed_size, hidden_size, n_layers, dropout=self.dropout, bidirectional=True)
         init_gru(self.gru)
 

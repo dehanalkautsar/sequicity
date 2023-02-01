@@ -2,7 +2,7 @@ import torch
 import random
 import numpy as np
 from config import global_config as cfg
-from reader import CamRest676Reader, get_glove_matrix
+from reader import CamRest676Reader, get_glove_matrix, get_fasttext_matrix
 from reader import KvretReader
 from tsd_net import TSD, cuda_, nan
 from torch.optim import Adam, RMSprop
@@ -314,9 +314,10 @@ class Model:
         for param in module.parameters():
             param.requires_grad = True
 
-    def load_glove_embedding(self, freeze=False):
+    def load_embedding(self, freeze=False):
         initial_arr = self.m.u_encoder.embedding.weight.data.cpu().numpy()
-        embedding_arr = torch.from_numpy(get_glove_matrix(self.reader.vocab, initial_arr))
+        # embedding_arr = torch.from_numpy(get_glove_matrix(self.reader.vocab, initial_arr))
+        embedding_arr = torch.from_numpy(get_fasttext_matrix(self.reader.vocab, initial_arr))
 
         self.m.u_encoder.embedding.weight.data.copy_(embedding_arr)
         self.m.z_decoder.emb.weight.data.copy_(embedding_arr)
@@ -367,7 +368,7 @@ def main():
     m = Model(args.model.split('-')[-1])
     m.count_params()
     if args.mode == 'train':
-        m.load_glove_embedding()
+        m.load_embedding()
         m.train()
     elif args.mode == 'adjust':
         m.load_model()

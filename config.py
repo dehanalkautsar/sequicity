@@ -26,17 +26,21 @@ class _Config:
     def _camrest_tsdf_init(self):
         self.beam_len_bonus = 0.5
         self.prev_z_method = 'separate'
-        self.vocab_size = 800
-        self.embedding_size = 50
+        self.vocab_size = 800 # maybe bs diubah2
+        self.embedding_size = 300 # 50 for glove, 300 for fasttext
         self.hidden_size = 50
         self.split = (3, 1, 1)
         self.lr = 0.003
         self.lr_decay = 0.5
         self.vocab_path = './vocab/vocab-camrest.pkl'
-        self.data = './data/CamRest676/CamRest676.json'
-        self.entity = './data/CamRest676/CamRestOTGY.json'
-        self.db = './data/CamRest676/CamRestDB.json'
-        self.glove_path = './data/glove/glove.6B.50d.txt'
+        # self.data = './data/CamRest676/CamRest/CamRest676.json'
+        # self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
+        # self.db = './data/CamRest676/CamRest/CamRestDB.json'
+        # self.glove_path = './data/glove/glove.6B.50d.txt'
+        self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
+        self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
+        self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
+        self.fasttext_path = './data/fasttext/cc.id.300.vec'
         self.batch_size = 32
         self.z_length = 8
         self.degree_size = 5
