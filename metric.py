@@ -204,8 +204,26 @@ class CamRestEvaluator(GenericEvaluator):
         self.entity_dict = {}
 
     def run_metrics(self):
-        raw_json = open('./data/CamRest676/IndoCamRest/IndoCamRest676.json')
-        raw_entities = open('./data/CamRest676/IndoCamRest/ontology_indo.json')
+        # indo
+        # raw_json = open('./data/CamRest676/IndoCamRest/IndoCamRest676.json')
+        # raw_entities = open('./data/CamRest676/IndoCamRest/ontology_indo.json')
+
+        # eng
+        # raw_json = open('./data/CamRest676/CamRest/CamRest676.json')
+        # raw_entities = open('./data/CamRest676/CamRest/CamRestOTGY.json')
+
+        # x-lang
+        # train
+        # raw_json = open('./data/CamRest676/CamRest/CamRest676.json')
+        # raw_entities = open('./data/CamRest676/CamRest/CamRestOTGY.json')
+        #test
+        # raw_json = open('./data/CamRest676/IndoCamRest/IndoCamRest676.json')
+        # raw_entities = open('./data/CamRest676/IndoCamRest/ontology_indo.json')
+
+        # bi
+        raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
+        raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
+
         raw_data = json.loads(raw_json.read().lower())
         raw_entities = json.loads(raw_entities.read().lower())
         self.get_entities(raw_entities)

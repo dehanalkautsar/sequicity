@@ -33,14 +33,35 @@ class _Config:
         self.lr = 0.003
         self.lr_decay = 0.5
         self.vocab_path = './vocab/vocab-camrest.pkl'
+        # indo
+        # self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
+        # self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
+        # self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
+        # self.fasttext_path = './data/fasttext/cc.id.300.vec'
+
+        # eng
         # self.data = './data/CamRest676/CamRest/CamRest676.json'
         # self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
         # self.db = './data/CamRest676/CamRest/CamRestDB.json'
-        # self.glove_path = './data/glove/glove.6B.50d.txt'
-        self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
-        self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
-        self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
-        self.fasttext_path = './data/fasttext/cc.id.300.vec'
+        # self.fasttext_path = './data/fasttext/cc.en.300.vec'
+
+        # x-lang
+        # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        # train
+        # self.data = './data/CamRest676/CamRest/CamRest676.json'
+        # self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
+        # self.db = './data/CamRest676/CamRest/CamRestDB.json'
+        # test
+        # self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
+        # self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
+        # self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
+
+        # bi
+        self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        self.data = './data/CamRest676/bi/IndoCamRest676_bi.json'
+        self.entity = './data/CamRest676/bi/ontology_indo_bi.json'
+        self.db = './data/CamRest676/bi/KB_indo.json'
+
         self.batch_size = 32
         self.z_length = 8
         self.degree_size = 5

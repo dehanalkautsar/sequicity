@@ -869,7 +869,7 @@ def get_fasttext_matrix(vocab, initial_embedding_np):
     :param initial_embedding_np:
     :return: np array of [V,E]
     """
-    ef = KeyedVectors.load_word2vec_format(cfg.fasttext_path, limit=100000)
+    ef = KeyedVectors.load_word2vec_format(cfg.fasttext_path)
     cnt = 0
     vec_array = initial_embedding_np
     old_avg = np.average(vec_array)
