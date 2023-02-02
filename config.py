@@ -57,10 +57,10 @@ class _Config:
         # self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
 
         # bi
-        self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
-        self.data = './data/CamRest676/bi/IndoCamRest676_bi.json'
-        self.entity = './data/CamRest676/bi/ontology_indo_bi.json'
-        self.db = './data/CamRest676/bi/KB_indo.json'
+        # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        # self.data = './data/CamRest676/bi/IndoCamRest676_bi.json'
+        # self.entity = './data/CamRest676/bi/ontology_indo_bi.json'
+        # self.db = './data/CamRest676/bi/KB_indo.json'
 
         self.batch_size = 32
         self.z_length = 8
@@ -96,11 +96,40 @@ class _Config:
         self.lr = 0.003
         self.lr_decay = 0.5
         self.vocab_path = './vocab/vocab-kvret.pkl'
-        self.train = './data/kvret/kvret_train_public.json'
-        self.dev = './data/kvret/kvret_dev_public.json'
-        self.test = './data/kvret/kvret_test_public.json'
-        self.entity = './data/kvret/kvret_entities.json'
-        self.glove_path = './data/glove/glove.6B.50d.txt'
+        # indo
+        # self.fasttext_path = './data/fasttext/cc.id.300.vec'
+        # self.train = './data/kvret/indosmd/IndoSMD_train.json'
+        # self.dev = './data/kvret/indosmd/IndoSMD_dev.json'
+        # self.test = './data/kvret/indosmd/IndoSMD_test.json'
+        # self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
+
+        # eng
+        # self.fasttext_path = './data/fasttext/cc.en.300.vec'
+        # self.train = './data/kvret/smd/kvret_train_public.json'
+        # self.dev = './data/kvret/smd/kvret_dev_public.json'
+        # self.test = './data/kvret/smd/kvret_test_public.json'
+        # self.entity = './data/kvret/smd/kvret_entities.json'
+
+        # x-lang
+        # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        # train
+        # self.train = './data/kvret/smd/kvret_train_public.json'
+        # self.dev = './data/kvret/smd/kvret_dev_public.json'
+        # self.test = './data/kvret/smd/kvret_test_public.json'
+        # self.entity = './data/kvret/smd/kvret_entities.json'
+        # test
+        # self.train = './data/kvret/indosmd/IndoSMD_train.json'
+        # self.dev = './data/kvret/indosmd/IndoSMD_dev.json'
+        # self.test = './data/kvret/indosmd/IndoSMD_test.json'
+        # self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
+
+        # bi
+        # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        # self.train = './data/kvret/bi/IndoSMD_train_bi.json'
+        # self.dev = './data/kvret/bi/IndoSMD_dev_bi.json'
+        # self.test = './data/kvret/bi/IndoSMD_test_bi.json'
+        # self.entity = './data/kvret/bi/kvret_indo_entities_bi.json'
+
         self.batch_size = 32
         self.degree_size = 5
         self.z_length = 8

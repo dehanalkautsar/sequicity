@@ -221,8 +221,8 @@ class CamRestEvaluator(GenericEvaluator):
         # raw_entities = open('./data/CamRest676/IndoCamRest/ontology_indo.json')
 
         # bi
-        raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
-        raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
+        # raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
+        # raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
 
         raw_data = json.loads(raw_json.read().lower())
         raw_entities = json.loads(raw_entities.read().lower())
@@ -336,12 +336,46 @@ class CamRestEvaluator(GenericEvaluator):
 class KvretEvaluator(GenericEvaluator):
     def __init__(self, result_path):
         super().__init__(result_path)
-        ent_json = open('./data/kvret/kvret_entities.json')
-        self.ent_data = json.loads(ent_json.read().lower())
-        self._get_entity_dict(self.ent_data)
-        raw_json = open('./data/kvret/kvret_test_public.json')
-        self.raw_data = json.loads(raw_json.read().lower())
-        raw_json.close()
+        # indo
+        # ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
+        # self.ent_data = json.loads(ent_json.read().lower())
+        # self._get_entity_dict(self.ent_data)
+        # raw_json = open('./data/kvret/indosmd/IndoSMD_test.json')
+        # self.raw_data = json.loads(raw_json.read().lower())
+        # raw_json.close()
+
+        # eng
+        # ent_json = open('./data/kvret/smd/kvret_entities.json')
+        # self.ent_data = json.loads(ent_json.read().lower())
+        # self._get_entity_dict(self.ent_data)
+        # raw_json = open('./data/kvret/smd/kvret_test_public.json')
+        # self.raw_data = json.loads(raw_json.read().lower())
+        # raw_json.close()
+
+        # x-lang
+        # train
+        # ent_json = open('./data/kvret/smd/kvret_entities.json')
+        # self.ent_data = json.loads(ent_json.read().lower())
+        # self._get_entity_dict(self.ent_data)
+        # raw_json = open('./data/kvret/smd/kvret_test_public.json')
+        # self.raw_data = json.loads(raw_json.read().lower())
+        # raw_json.close()
+        # test
+        # ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
+        # self.ent_data = json.loads(ent_json.read().lower())
+        # self._get_entity_dict(self.ent_data)
+        # raw_json = open('./data/kvret/indosmd/IndoSMD_test.json')
+        # self.raw_data = json.loads(raw_json.read().lower())
+        # raw_json.close()
+
+        # bi
+        # ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
+        # self.ent_data = json.loads(ent_json.read().lower())
+        # self._get_entity_dict(self.ent_data)
+        # raw_json = open('./data/kvret/bi/IndoSMD_test_bi.json')
+        # self.raw_data = json.loads(raw_json.read().lower())
+        # raw_json.close()
+
 
     def run_metrics(self):
         data = self.read_result_data()
