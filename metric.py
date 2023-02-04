@@ -337,12 +337,12 @@ class KvretEvaluator(GenericEvaluator):
     def __init__(self, result_path):
         super().__init__(result_path)
         # indo
-        # ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
-        # self.ent_data = json.loads(ent_json.read().lower())
-        # self._get_entity_dict(self.ent_data)
-        # raw_json = open('./data/kvret/indosmd/IndoSMD_test.json')
-        # self.raw_data = json.loads(raw_json.read().lower())
-        # raw_json.close()
+        ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
+        self.ent_data = json.loads(ent_json.read().lower())
+        self._get_entity_dict(self.ent_data)
+        raw_json = open('./data/kvret/indosmd/IndoSMD_test.json')
+        self.raw_data = json.loads(raw_json.read().lower())
+        raw_json.close()
 
         # eng
         # ent_json = open('./data/kvret/smd/kvret_entities.json')
