@@ -337,10 +337,12 @@ def main():
     parser.add_argument('-mode')
     parser.add_argument('-model')
     parser.add_argument('-cfg', nargs='*')
+    parser.add_argument('-exp_setting')
     args = parser.parse_args()
 
     cfg.init_handler(args.model)
     cfg.dataset = args.model.split('-')[-1]
+    cfg.exp_setting = args.exp_setting
 
     if args.cfg:
         for pair in args.cfg:

@@ -13,6 +13,7 @@ class _Config:
         self.m = 'TSD'
         self.prev_z_method = 'none'
         self.dataset = 'unknown'
+        self.exp_setting = 'unknown'
 
         self.seed = 0
   
@@ -46,12 +47,14 @@ class _Config:
         # self.fasttext_path = './data/fasttext/cc.en.300.vec'
 
         # x-lang
-        # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
-        # train
-        # self.data = './data/CamRest676/CamRest/CamRest676.json'
-        # self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
-        # self.db = './data/CamRest676/CamRest/CamRestDB.json'
-        # test
+        self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        self.vocab_data_path = './data/CamRest676/bi/IndoCamRest676_bi.json'
+        self.vocab_db_path = './data/CamRest676/bi/kb_indo_bi.json'
+        # # train
+        self.data = './data/CamRest676/CamRest/CamRest676.json'
+        self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
+        self.db = './data/CamRest676/CamRest/CamRestDB.json'
+        # # test
         # self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
         # self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
         # self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
@@ -112,15 +115,14 @@ class _Config:
 
         # x-lang
         # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
-        # train
+        # self.vocab_data_path = ''
+        # self.vocab_entity_path = ''
         # self.train = './data/kvret/smd/kvret_train_public.json'
         # self.dev = './data/kvret/smd/kvret_dev_public.json'
-        # self.test = './data/kvret/smd/kvret_test_public.json'
-        # self.entity = './data/kvret/smd/kvret_entities.json'
-        # test
-        # self.train = './data/kvret/indosmd/IndoSMD_train.json'
-        # self.dev = './data/kvret/indosmd/IndoSMD_dev.json'
         # self.test = './data/kvret/indosmd/IndoSMD_test.json'
+        # # train
+        # self.entity = './data/kvret/smd/kvret_entities.json'
+        # # test
         # self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
 
         # bi

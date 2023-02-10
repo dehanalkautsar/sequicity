@@ -433,7 +433,15 @@ class CamRest676Reader(_ReaderBase):
         db_json = open(db_json_path)
         db_data = json.loads(db_json.read().lower())
         self.db = db_data
-        tokenized_data = self._get_tokenized_data(raw_data, db_data, construct_vocab)
+        if cfg.exp_setting == 'cross':
+            raw_data_json_vocab = open(cfg.vocab_data_path)
+            raw_data_vocab = json.loads(raw_data_json_vocab.read().lower())
+            db_json_vocab = open(cfg.vocab_db_path)
+            db_data_vocab = json.loads(db_json_vocab.read().lower())
+            tokenized_data_vocab = self._get_tokenized_data(raw_data_vocab, db_data_vocab, construct_vocab)
+            tokenized_data = self._get_tokenized_data(raw_data, db_data, False) # vocab already constructed in above line
+        else:
+            tokenized_data = self._get_tokenized_data(raw_data, db_data, construct_vocab)
         if construct_vocab:
             self.vocab.construct(cfg.vocab_size)
             self.vocab.save_vocab(cfg.vocab_path)
