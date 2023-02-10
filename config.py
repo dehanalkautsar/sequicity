@@ -97,11 +97,11 @@ class _Config:
         self.lr_decay = 0.5
         self.vocab_path = './vocab/vocab-kvret.pkl'
         # indo
-        self.fasttext_path = './data/fasttext/cc.id.300.vec'
-        self.train = './data/kvret/indosmd/IndoSMD_train.json'
-        self.dev = './data/kvret/indosmd/IndoSMD_dev.json'
-        self.test = './data/kvret/indosmd/IndoSMD_test.json'
-        self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
+        # self.fasttext_path = './data/fasttext/cc.id.300.vec'
+        # self.train = './data/kvret/indosmd/IndoSMD_train.json'
+        # self.dev = './data/kvret/indosmd/IndoSMD_dev.json'
+        # self.test = './data/kvret/indosmd/IndoSMD_test.json'
+        # self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
 
         # eng
         # self.fasttext_path = './data/fasttext/cc.en.300.vec'
