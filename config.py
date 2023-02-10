@@ -27,7 +27,7 @@ class _Config:
     def _camrest_tsdf_init(self):
         self.beam_len_bonus = 0.5
         self.prev_z_method = 'separate'
-        self.vocab_size = 800 # maybe bs diubah2
+        self.vocab_size = 1600 # bs diubah2
         self.embedding_size = 300 # 50 for glove, 300 for fasttext
         self.hidden_size = 50
         self.split = (3, 1, 1)
@@ -51,19 +51,19 @@ class _Config:
         self.vocab_data_path = './data/CamRest676/bi/IndoCamRest676_bi.json'
         self.vocab_db_path = './data/CamRest676/bi/kb_indo_bi.json'
         # # train
-        self.data = './data/CamRest676/CamRest/CamRest676.json'
-        self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
-        self.db = './data/CamRest676/CamRest/CamRestDB.json'
+        # self.data = './data/CamRest676/CamRest/CamRest676.json'
+        # self.entity = './data/CamRest676/CamRest/CamRestOTGY.json'
+        # self.db = './data/CamRest676/CamRest/CamRestDB.json'
         # # test
-        # self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
-        # self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
-        # self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
+        self.data = './data/CamRest676/IndoCamRest/IndoCamRest676.json'
+        self.entity = './data/CamRest676/IndoCamRest/ontology_indo.json'
+        self.db = './data/CamRest676/IndoCamRest/KB_indo.json'
 
         # bi
         # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
         # self.data = './data/CamRest676/bi/IndoCamRest676_bi.json'
         # self.entity = './data/CamRest676/bi/ontology_indo_bi.json'
-        # self.db = './data/CamRest676/bi/KB_indo.json'
+        # self.db = './data/CamRest676/bi/KB_indo_bi.json'
 
         self.batch_size = 32
         self.z_length = 8
@@ -114,14 +114,12 @@ class _Config:
         # self.entity = './data/kvret/smd/kvret_entities.json'
 
         # x-lang
-        # self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
-        # self.vocab_data_path = ''
-        # self.vocab_entity_path = ''
-        # self.train = './data/kvret/smd/kvret_train_public.json'
-        # self.dev = './data/kvret/smd/kvret_dev_public.json'
-        # self.test = './data/kvret/indosmd/IndoSMD_test.json'
+        self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
+        self.train = './data/kvret/smd/kvret_train_public.json'
+        self.dev = './data/kvret/smd/kvret_dev_public.json'
+        self.test = './data/kvret/indosmd/IndoSMD_test.json'
         # # train
-        # self.entity = './data/kvret/smd/kvret_entities.json'
+        self.entity = './data/kvret/smd/kvret_entities.json'
         # # test
         # self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
 

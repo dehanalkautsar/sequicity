@@ -221,8 +221,8 @@ class CamRestEvaluator(GenericEvaluator):
         # raw_entities = open('./data/CamRest676/IndoCamRest/ontology_indo.json')
 
         # bi
-        # raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
-        # raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
+        raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
+        raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
 
         raw_data = json.loads(raw_json.read().lower())
         raw_entities = json.loads(raw_entities.read().lower())
@@ -354,12 +354,12 @@ class KvretEvaluator(GenericEvaluator):
 
         # x-lang
         # train
-        # ent_json = open('./data/kvret/smd/kvret_entities.json')
-        # self.ent_data = json.loads(ent_json.read().lower())
-        # self._get_entity_dict(self.ent_data)
-        # raw_json = open('./data/kvret/smd/kvret_test_public.json')
-        # self.raw_data = json.loads(raw_json.read().lower())
-        # raw_json.close()
+        ent_json = open('./data/kvret/smd/kvret_entities.json')
+        self.ent_data = json.loads(ent_json.read().lower())
+        self._get_entity_dict(self.ent_data)
+        raw_json = open('./data/kvret/smd/kvret_test_public.json')
+        self.raw_data = json.loads(raw_json.read().lower())
+        raw_json.close()
         # test
         # ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
         # self.ent_data = json.loads(ent_json.read().lower())

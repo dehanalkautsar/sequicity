@@ -433,7 +433,7 @@ class CamRest676Reader(_ReaderBase):
         db_json = open(db_json_path)
         db_data = json.loads(db_json.read().lower())
         self.db = db_data
-        if cfg.exp_setting == 'cross':
+        if cfg.exp_setting == 'cross': #cross-lingual setting
             raw_data_json_vocab = open(cfg.vocab_data_path)
             raw_data_vocab = json.loads(raw_data_json_vocab.read().lower())
             db_json_vocab = open(cfg.vocab_db_path)
