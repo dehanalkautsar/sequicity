@@ -449,6 +449,13 @@ class CamRest676Reader(_ReaderBase):
             self.vocab.load_vocab(cfg.vocab_path)
         encoded_data = self._get_encoded_data(tokenized_data)
         self.train, self.dev, self.test = self._split_data(encoded_data, cfg.split)
+        # checking if bi-en or bi-id
+        if cfg.mode == 'test' and (cfg.exp_setting == 'bi-en' or cfg.exp_setting == 'bi-id'):
+            # if yes, update the test set
+            if cfg.exp_setting == 'bi-en':
+                _,_,self.test = self._split_data(self._get_encoded_data(self._get_tokenized_data(json.loads(open('./data/CamRest676/CamRest/CamRest676.json').read().lower()), db_data, False)), cfg.split)
+            elif cfg.exp_setting == 'bi-id':
+                _,_,self.test = self._split_data(self._get_encoded_data(self._get_tokenized_data(json.loads(open('./data/CamRest676/IndoCamRest/IndoCamRest676.json').read().lower()), db_data, False)), cfg.split)
         random.shuffle(self.train)
         random.shuffle(self.dev)
         random.shuffle(self.test)

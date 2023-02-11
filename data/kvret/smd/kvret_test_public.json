@@ -1242,7 +1242,7 @@
         "turn": "driver",
         "data": {
           "end_dialogue": false,
-          "utterance": ""
+          "utterance": "-"
         }
       },
       {
@@ -32597,10 +32597,9 @@
             "poi": true
           },
           "slots": {
-            "address": "The address is 214 El Camino Real, I sent it on your screen",
             "poi": "stanford childrens health"
           },
-          "utterance": ""
+          "utterance": "The address is 214 El Camino Real, I sent it on your screen"
         }
       },
       {
