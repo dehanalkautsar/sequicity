@@ -92,7 +92,7 @@ class _Config:
     def _kvret_tsdf_init(self):
         self.prev_z_method = 'separate'
         self.intent = 'all'
-        self.vocab_size = 1400
+        self.vocab_size = 1800
         self.embedding_size = 300
         self.hidden_size = 50
         self.split = None
@@ -115,12 +115,20 @@ class _Config:
 
         # x-lang
         self.fasttext_path = './data/fasttext/wiki.multi.id.vec'
-        self.train = './data/kvret/smd/kvret_train_public.json'
-        self.dev = './data/kvret/smd/kvret_dev_public.json'
-        self.test = './data/kvret/indosmd/IndoSMD_test.json'
+        # vocab construct
+        # self.train = './data/kvret/smd/kvret_train_public.json'
+        # self.test = './data/kvret/smd/kvret_test_public.json'
+        # self.dev = './data/kvret/indosmd/IndoSMD_test.json'
+        self.entity = './data/kvret/bi/kvret_indo_entities_bi.json'
         # # train
-        self.entity = './data/kvret/smd/kvret_entities.json'
+        # self.train = './data/kvret/smd/kvret_train_public.json'
+        # self.test = './data/kvret/smd/kvret_dev_public.json'
+        # self.dev = './data/kvret/smd/kvret_test_public.json'
+        # self.entity = './data/kvret/smd/kvret_entities.json'
         # # test
+        self.train = './data/kvret/indosmd/IndoSMD_train.json'
+        self.dev = './data/kvret/indosmd/IndoSMD_dev.json'
+        self.test = './data/kvret/indosmd/IndoSMD_test.json'
         # self.entity = './data/kvret/indosmd/kvret_indo_entities.json'
 
         # bi

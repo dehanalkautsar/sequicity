@@ -354,19 +354,19 @@ class KvretEvaluator(GenericEvaluator):
 
         # x-lang
         # train
-        ent_json = open('./data/kvret/smd/kvret_entities.json')
-        self.ent_data = json.loads(ent_json.read().lower())
-        self._get_entity_dict(self.ent_data)
-        raw_json = open('./data/kvret/smd/kvret_test_public.json')
-        self.raw_data = json.loads(raw_json.read().lower())
-        raw_json.close()
-        # test
-        # ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
+        # ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
         # self.ent_data = json.loads(ent_json.read().lower())
         # self._get_entity_dict(self.ent_data)
-        # raw_json = open('./data/kvret/indosmd/IndoSMD_test.json')
+        # raw_json = open('./data/kvret/smd/kvret_test_public.json')
         # self.raw_data = json.loads(raw_json.read().lower())
         # raw_json.close()
+        # test
+        ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
+        self.ent_data = json.loads(ent_json.read().lower())
+        self._get_entity_dict(self.ent_data)
+        raw_json = open('./data/kvret/indosmd/IndoSMD_test.json')
+        self.raw_data = json.loads(raw_json.read().lower())
+        raw_json.close()
 
         # bi
         # ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
@@ -383,7 +383,7 @@ class KvretEvaluator(GenericEvaluator):
             data[i]['response'] = self.clean_by_intent(data[i]['response'],int(data[i]['dial_id']))
             data[i]['generated_response'] = self.clean_by_intent(data[i]['generated_response'],int(data[i]['dial_id']))
         match_rate = self.match_rate_metric(data, 'match')
-        bleu_score = self.bleu_metric(data,'bleu')
+        bleu_score = self.bleu_metric(data,'bleu') #problem
         success_f1 = self.success_f1_metric(data,'success_f1')
         self._print_dict(self.metric_dict)
 
