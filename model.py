@@ -9,6 +9,7 @@ from torch.optim import Adam, RMSprop
 from torch.autograd import Variable
 from reader import pad_sequences
 import argparse, time
+from tqdm import tqdm
 
 from metric import CamRestEvaluator, KvretEvaluator
 import logging
@@ -176,7 +177,7 @@ class Model:
         self.reader.result_file = None
         data_iterator = self.reader.mini_batch_iterator(data)
         mode = 'test' if not cfg.pretrain else 'pretrain_test'
-        for batch_num, dial_batch in enumerate(data_iterator):
+        for batch_num, dial_batch in tqdm(enumerate(data_iterator)):
             turn_states = {}
             prev_z = None
             for turn_num, turn_batch in enumerate(dial_batch):
@@ -190,6 +191,7 @@ class Model:
                                                    dial_id=turn_batch['dial_id'], **kw_ret)
                 self.reader.wrap_result(turn_batch, m_idx, z_idx, prev_z=prev_z)
                 prev_z = z_idx
+        self.reader.close_result()
         ev = self.EV(result_path=cfg.result_path)
         res = ev.run_metrics()
         self.m.train()
@@ -200,7 +202,7 @@ class Model:
         data_iterator = self.reader.mini_batch_iterator(data)
         sup_loss, unsup_loss = 0, 0
         sup_cnt, unsup_cnt = 0, 0
-        for dial_batch in data_iterator:
+        for dial_batch in tqdm(data_iterator):
             turn_states = {}
             for turn_num, turn_batch in enumerate(dial_batch):
                 u_input, u_input_np, z_input, m_input, m_input_np, u_len, \
@@ -340,7 +342,7 @@ def main():
     parser.add_argument('-exp_setting')
     args = parser.parse_args()
 
-    cfg.init_handler(args.model)
+    cfg.init_handler(args.model, args.exp_setting, args.mode)
     cfg.dataset = args.model.split('-')[-1]
     cfg.exp_setting = args.exp_setting
 

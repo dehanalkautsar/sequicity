@@ -221,8 +221,8 @@ class CamRestEvaluator(GenericEvaluator):
         # raw_entities = open('./data/CamRest676/IndoCamRest/ontology_indo.json')
 
         # bi
-        raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
-        raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
+        # raw_json = open('./data/CamRest676/bi/IndoCamRest676_bi.json')
+        # raw_entities = open('./data/CamRest676/bi/ontology_indo_bi.json')
 
         raw_data = json.loads(raw_json.read().lower())
         raw_entities = json.loads(raw_entities.read().lower())
@@ -233,7 +233,7 @@ class CamRestEvaluator(GenericEvaluator):
             data[i]['generated_response'] = self.clean(data[i]['generated_response'])
         bleu_score = self.bleu_metric(data,'bleu')
         success_f1 = self.success_f1_metric(data, 'success')
-        match = self.match_metric(data, 'match', raw_data=raw_data)
+        match = self.match_metric(data, 'match')
         self._print_dict(self.metric_dict)
         #return -success_f1[0]
 
@@ -354,12 +354,12 @@ class KvretEvaluator(GenericEvaluator):
 
         # x-lang
         # train
-        ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
-        self.ent_data = json.loads(ent_json.read().lower())
-        self._get_entity_dict(self.ent_data)
-        raw_json = open('./data/kvret/smd/kvret_test_public.json')
-        self.raw_data = json.loads(raw_json.read().lower())
-        raw_json.close()
+        # ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
+        # self.ent_data = json.loads(ent_json.read().lower())
+        # self._get_entity_dict(self.ent_data)
+        # raw_json = open('./data/kvret/smd/kvret_test_public.json')
+        # self.raw_data = json.loads(raw_json.read().lower())
+        # raw_json.close()
         # test
         # ent_json = open('./data/kvret/indosmd/kvret_indo_entities.json')
         # self.ent_data = json.loads(ent_json.read().lower())
@@ -369,12 +369,16 @@ class KvretEvaluator(GenericEvaluator):
         # raw_json.close()
 
         # bi
-        # ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
-        # self.ent_data = json.loads(ent_json.read().lower())
-        # self._get_entity_dict(self.ent_data)
-        # raw_json = open('./data/kvret/bi/IndoSMD_test_bi.json')
-        # self.raw_data = json.loads(raw_json.read().lower())
-        # raw_json.close()
+        ent_json = open('./data/kvret/bi/kvret_indo_entities_bi.json')
+        self.ent_data = json.loads(ent_json.read().lower())
+        self._get_entity_dict(self.ent_data)
+
+        self.raw_data = []
+        test_json_path = ['./data/kvret/smd/kvret_test_public.json', './data/kvret/indosmd/IndoSMD_test.json']
+        for file in test_json_path:
+            raw_json = open(file)
+            self.raw_data.extend(json.loads(raw_json.read().lower()))
+            raw_json.close()
 
 
     def run_metrics(self):

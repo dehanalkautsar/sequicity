@@ -1,3 +1,5 @@
 numpy
 nltk==3.2.1
 torch
+gensim==3.8.3
+tqdm

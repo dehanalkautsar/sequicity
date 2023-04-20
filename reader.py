@@ -6,6 +6,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from torch import int64
 from gensim.models import KeyedVectors
+import torch
 import logging
 import random
 import os
@@ -272,6 +273,9 @@ class _ReaderBase:
             writer.writeheader()
         writer.writerows(results)
         return results
+    
+    def close_result(self):
+        self.result_file.close()
 
     def db_search(self, constraints):
         raise NotImplementedError('This is an abstract method')
@@ -309,7 +313,7 @@ class _ReaderBase:
 class CamRest676Reader(_ReaderBase):
     def __init__(self):
         super().__init__()
-        self._construct(cfg.data, cfg.db)
+        self._construct(cfg.data, cfg.test_list, cfg.db)
         self.result_file = ''
 
     def _get_tokenized_data(self, raw_data, db_data, construct_vocab):
@@ -417,19 +421,31 @@ class CamRest676Reader(_ReaderBase):
         train, dev, test = encoded_data[:dev_thr], encoded_data[dev_thr:test_thr], encoded_data[test_thr:]
         return train, dev, test
 
-    def _construct(self, data_json_path, db_json_path):
+    def _construct(self, data_json_path, test_list_path, db_json_path):
         """
         construct encoded train, dev, test set.
         :param data_json_path:
         :param db_json_path:
         :return:
         """
-        construct_vocab = False
-        if not os.path.isfile(cfg.vocab_path):
-            construct_vocab = True
+        # construct_vocab = False
+        construct_vocab = True
+        if os.path.exists(cfg.vocab_path):
+            os.remove(cfg.vocab_path)
+            # construct_vocab = True
             print('Constructing vocab file...')
-        raw_data_json = open(data_json_path)
-        raw_data = json.loads(raw_data_json.read().lower())
+        tr,de,te = [],[],[]
+        for file in data_json_path:
+            raw_data_json = open(file)
+            raw_data = json.loads(raw_data_json.read().lower())
+            temp_tr, temp_de, _ = self._split_data(raw_data, cfg.split)
+            tr.extend(temp_tr)
+            de.extend(temp_de)
+        for file in test_list_path:
+            raw_data_json = open(file)
+            raw_data = json.loads(raw_data_json.read().lower())
+            _,_,temp_te = self._split_data(raw_data, cfg.split)
+            te.extend(temp_te)
         db_json = open(db_json_path)
         db_data = json.loads(db_json.read().lower())
         self.db = db_data
@@ -439,23 +455,21 @@ class CamRest676Reader(_ReaderBase):
             db_json_vocab = open(cfg.vocab_db_path)
             db_data_vocab = json.loads(db_json_vocab.read().lower())
             tokenized_data_vocab = self._get_tokenized_data(raw_data_vocab, db_data_vocab, construct_vocab)
-            tokenized_data = self._get_tokenized_data(raw_data, db_data, False) # vocab already constructed in above line
+            tokenized_tr = self._get_tokenized_data(tr, db_data, False) # vocab already constructed in above line
+            tokenized_de = self._get_tokenized_data(de, db_data, False) # vocab already constructed in above line
+            tokenized_te = self._get_tokenized_data(te, db_data, False) # vocab already constructed in above line
         else:
-            tokenized_data = self._get_tokenized_data(raw_data, db_data, construct_vocab)
+            tokenized_tr = self._get_tokenized_data(tr, db_data, construct_vocab)
+            tokenized_de = self._get_tokenized_data(de, db_data, construct_vocab)
+            tokenized_te = self._get_tokenized_data(te, db_data, construct_vocab)
         if construct_vocab:
             self.vocab.construct(cfg.vocab_size)
             self.vocab.save_vocab(cfg.vocab_path)
         else:
             self.vocab.load_vocab(cfg.vocab_path)
-        encoded_data = self._get_encoded_data(tokenized_data)
-        self.train, self.dev, self.test = self._split_data(encoded_data, cfg.split)
-        # checking if bi-en or bi-id
-        if cfg.mode == 'test' and (cfg.exp_setting == 'bi-en' or cfg.exp_setting == 'bi-id'):
-            # if yes, update the test set
-            if cfg.exp_setting == 'bi-en':
-                _,_,self.test = self._split_data(self._get_encoded_data(self._get_tokenized_data(json.loads(open('./data/CamRest676/CamRest/CamRest676.json').read().lower()), db_data, False)), cfg.split)
-            elif cfg.exp_setting == 'bi-id':
-                _,_,self.test = self._split_data(self._get_encoded_data(self._get_tokenized_data(json.loads(open('./data/CamRest676/IndoCamRest/IndoCamRest676.json').read().lower()), db_data, False)), cfg.split)
+        self.train = self._get_encoded_data(tokenized_tr)
+        self.dev = self._get_encoded_data(tokenized_de)
+        self.test = self._get_encoded_data(tokenized_te)
         random.shuffle(self.train)
         random.shuffle(self.dev)
         random.shuffle(self.test)
@@ -490,20 +504,43 @@ class KvretReader(_ReaderBase):
         self._construct(cfg.train, cfg.dev, cfg.test, cfg.entity)
 
     def _construct(self, train_json_path, dev_json_path, test_json_path, entity_json_path):
-        construct_vocab = False
-        if not os.path.isfile(cfg.vocab_path):
-            construct_vocab = True
-            print('Constructing vocab file...')
-        train_json, dev_json, test_json = open(train_json_path), open(dev_json_path), open(test_json_path)
+        # construct_vocab = False
+        construct_vocab = True
+        if os.path.exists(cfg.vocab_path):
+            os.remove(cfg.vocab_path)
+            # construct_vocab = True
+        print('Constructing vocab file...')
         entity_json = open(entity_json_path)
-        train_data, dev_data, test_data = json.loads(train_json.read().lower()), json.loads(dev_json.read().lower()), \
-                                          json.loads(test_json.read().lower())
         entity_data = json.loads(entity_json.read().lower())
         self._get_entity_dict(entity_data)
-
-        tokenized_train = self._get_tokenized_data(train_data, construct_vocab, 'train')
-        tokenized_dev = self._get_tokenized_data(dev_data, construct_vocab, 'dev')
-        tokenized_test = self._get_tokenized_data(test_data, construct_vocab, 'test')
+        
+        tr,de,te = [],[],[]
+        for file in train_json_path:
+            train_json = open(file)
+            train_data = json.loads(train_json.read().lower())
+            tr.extend(train_data)
+        for file in dev_json_path:
+            dev_json = open(file)
+            dev_data = json.loads(dev_json.read().lower())
+            de.extend(dev_data)
+        for file in test_json_path:
+            test_json = open(file)
+            test_data = json.loads(test_json.read().lower())
+            te.extend(test_data)
+        
+        if cfg.exp_setting == 'cross': #cross-lingual setting
+            raw_data_json_vocab = open(cfg.vocab_data_path)
+            raw_data_vocab = json.loads(raw_data_json_vocab.read().lower())
+            db_json_vocab = open(cfg.vocab_db_path)
+            db_data_vocab = json.loads(db_json_vocab.read().lower())
+            tokenized_data_vocab = self._get_tokenized_data(raw_data_vocab, construct_vocab, 'train')
+            tokenized_tr = self._get_tokenized_data(tr, False, 'train') # vocab already constructed in above line
+            tokenized_de = self._get_tokenized_data(de, False, 'dev') # vocab already constructed in above line
+            tokenized_te = self._get_tokenized_data(te, False, 'test') # vocab already constructed in above line
+        else:
+            tokenized_tr = self._get_tokenized_data(tr, construct_vocab, 'train')
+            tokenized_de = self._get_tokenized_data(de, construct_vocab, 'dev')
+            tokenized_te = self._get_tokenized_data(te, construct_vocab, 'test')
 
         if construct_vocab:
             self.vocab.construct(cfg.vocab_size)
@@ -511,8 +548,8 @@ class KvretReader(_ReaderBase):
         else:
             self.vocab.load_vocab(cfg.vocab_path)
 
-        self.train, self.dev, self.test = map(self._get_encoded_data, [tokenized_train, tokenized_dev,
-                                                                       tokenized_test])
+        self.train, self.dev, self.test = map(self._get_encoded_data, [tokenized_tr, tokenized_de,
+                                                                       tokenized_te])
         random.shuffle(self.train)
         random.shuffle(self.dev)
         random.shuffle(self.test)
@@ -814,6 +851,10 @@ def pad_sequences(sequences, maxlen=None, dtype='int32',
     sample_shape = tuple()
     for s in sequences:
         if len(s) > 0:
+            if isinstance(s[0], torch.Tensor):
+                # torch.Tensor must be migrated to cpu first
+                for i in range(len(s)):
+                    s[i] = s[i].cpu()
             sample_shape = np.asarray(s).shape[1:]
             break
 
@@ -829,6 +870,9 @@ def pad_sequences(sequences, maxlen=None, dtype='int32',
             raise ValueError('Truncating type "%s" not understood' % truncating)
 
         # check `trunc` has expected shape
+        if isinstance(trunc[0], torch.Tensor):
+            for i in range(len(trunc)):
+                trunc[i] = trunc[i].cpu()
         trunc = np.asarray(trunc, dtype=dtype)
         if trunc.shape[1:] != sample_shape:
             raise ValueError('Shape of sample %s of sequence at position %s is different from expected shape %s' %
